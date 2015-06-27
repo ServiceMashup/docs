@@ -1,7 +1,5 @@
 #Service Mashup - Microservices in Praxis
 
-
-
 ##Ziele
 
 * schnell, günstig, sicher
@@ -24,6 +22,9 @@
 * pattern
 * scale
 * SLA
+* Kommunikation einer möglich Fehlerkompensation am Beispiel vom Contract Service klar machen
+  * Sprechen mit Product-Owner und abwägen von Risiken, Kosten und Nutzen
+  * Graceful Shutdown - z.B. drainen von nodes
 
 ##Infrastruktur
 
