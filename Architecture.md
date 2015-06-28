@@ -30,6 +30,10 @@ Wie unsere Kunden unserer ECommerce-Organisation es gewohnt sind, ist ein 24/7 B
 
 Entscheidend ist, viele sonst vorborgende Annahmen, mögliche inhaltliche oder technische Fehler bzw. Probleme in Entwicklung und Betrieb von Anfang an explizit zu machen. Der Kompromiss aus technischem Aufwand und damit verbundene Kosten und der eigentlich Nutzen entsteht in der transparenten Kommunikation. D.h. vor der vermeidlich technisch perfekten Lösung, steht das Gespräch Ziele und Nutzen gegen Aufwände und Kosten an. Nach dem [Pareto-Prinzip](https://de.wikipedia.org/wiki/Paretoprinzip) ist ein "für den Anfang gut genug" nicht die perfekte aber weniger komplexe Entscheidung.
 
+Wer vor sehr komplexen Teildomänen mit vielen fachlichen oder technischen Herausforderungen steht, sei hiermit empfohlen auf ein "klassisches [Monolith First](http://martinfowler.com/bliki/MonolithFirst.html)" Architekturmodell zurückzugreifen, um inhaltlich mehr zu erlernen.
+
+
+
 
 
 
