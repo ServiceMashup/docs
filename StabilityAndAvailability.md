@@ -6,7 +6,7 @@ Für Microservice-Architekturen bietet sich eine Reihe von Maßnahmen zur Fehler
 
 ### Service Discovery und Fallbacks
 
-Nehmen wir an, Service A möchte seinen eigenen Datenbestand aktualisieren und muss dazu Service B aufrufen. In diesem Fall ist es für Service A im Grunde irrelevant, wieviele Instanzen von Service B laufen, unter welchen Addressen sie erreichbar sind, und welche der laufenden Instanzen nun tatsächlich aufgerufen werden soll. Das einzige Interesse von Service A ist, eine HTTP-Verbindung zu einem intakten Instanz von Service B zu erlangen. Anstatt nun Service A über Konfigurationsdaten mit sämtlichen Zugangsinformationen zu Service B auszustatten, können diese Informationen auch zur Laufzeit ermittelt werden. Dazu benötigt man einen Dienst, der als Registry fungiert und Daten über sämtliche im System laufende Dienste anbietet. Von dieser Registrierungsstelle können nach Bedarf die aktuellen Adressen eines Dienstes anhand seines Namens erfragt werden. Die somit erlangte Liste von Adressen kann für eine bestimmte Zeit vorgehalten werden, bis eine erneute Anfrage stattfindet. Möchte man nun eine Verbindung herstellen, probiert man die Adressen systematisch durch. Antwortet die Gegenstelle nicht, so wird versucht, eine Verbindung mit der nächsten Adresse aus der Liste herzustellen. Diesen ersten naiven Ansatz kann man dann weiter ausbauen, z.B. durch den Einsatz eines Circuit Breakers oder des Round-Robin-Verfahrens. Eine beispielhafte Implementierung im Rahmen eines AngularJS-Services ist in Listing A1 dargestellt.
+Nehmen wir an, Service A möchte seinen eigenen Datenbestand aktualisieren und muss dazu Service B aufrufen. In diesem Fall ist es für Service A im Grunde irrelevant, wieviele Instanzen von Service B laufen, unter welchen Addressen sie erreichbar sind, und welche der laufenden Instanzen nun tatsächlich aufgerufen werden soll. Das einzige Interesse von Service A ist, eine HTTP-Verbindung zu einer intakten Instanz von Service B zu erlangen. Anstatt nun Service A über Konfigurationsdaten mit sämtlichen Zugangsinformationen zu Service B auszustatten, können diese Informationen auch zur Laufzeit ermittelt werden. Dazu benötigt man einen Dienst, der als Registry fungiert und Daten über sämtliche im System laufende Dienste anbietet. Von dieser Registrierungsstelle können nach Bedarf die aktuellen Adressen eines Dienstes anhand seines Namens erfragt werden. Die somit erlangte Liste von Adressen kann für eine bestimmte Zeit im Speicher vorgehalten werden. Möchte man nun eine Verbindung herstellen, probiert man die Adressen systematisch durch. Antwortet die Gegenstelle nicht, so wird versucht, eine Verbindung mit der nächsten Adresse aus der Liste herzustellen. Diesen ersten naiven Ansatz kann man dann weiter ausbauen, z.B. durch den Einsatz eines Circuit Breakers oder des Round-Robin-Verfahrens. Eine beispielhafte Implementierung im Rahmen eines AngularJS-Services ist in Listing A1 dargestellt.
 
 Listing A1
 
@@ -60,6 +60,54 @@ Das Auffinden und Auswählen von Services ist eine Querschnittsfunktionalität, 
 * Atom Writes (Code)
 * https://github.com/ServiceMashup/web-app/blob/master/app/cart.directive.js
 
-### Data Replication (Code)
+### Datenreplikation
 
-* Replicate data from Data Warehouse
+In den meisten Fällen bestehen Dienste nicht nur aus Logik, sondern brauchen in irgendeiner Form auch Zugriff auf Daten, sei es, dass sie neue Daten in das System einspeisen, oder bereits vorhandene Daten weiterverarbeiten. In klassischen Architekturen gibt aus diesem Grund eine oder mehrere meist relationale Datenbanken, um die sich Services wie Planeten in einem Sonnensystem gruppieren. Die Herausforderungen, die sich dabei stellen, sind die Behandlung von Nebenläufigkeit, Skalierung und Ausfallsicherheit. Ist die Datenbank offline, "geht nichts mehr". Ebenso ist die Evolution des Datenschemas eine heikle Angelegenheit, betrifft doch eine Änderung meist auch alle abhängigen Komponenten, was Entwickler meist vor diesem Schritt zurückschrecken lässt. Ein solch starkes Abhängigkeitsgefüge ist Microservice-Architekturen nicht zuträglich, zur Autarkie eines Dienstes gehört hier auch die alleinige Hoheit über sämtliche benötigten Daten. Um diese zu erlangen, ist es sinvoll, eine lokale Kopie der Daten zu haben, sei es nur im Speicher, Dateisystem oder gar in einer lokalen Datenbank, die nur der jeweiligen Service-Instanz zugänglich ist. Es handelt sich dabei jedoch um temporäre Daten. Beim Herunterfahren des Dienstes oder der Veröffentlichung einer neuen Version sind diese verloren. Ebenso kann es sein, dass die Kopie der Daten nicht mehr dem aktuellen Stand der "Master-Daten" entspricht, falls sich diese in der Zwischenzeit geändert haben sollten. Dies erfordert ein Umdenken auf Seite der Entwickler verglichen mit dem zentralen Ansatz: Die Behandlung von Inkonsistenzen wird zum elementaren Bestandteil der Programmlogik. In unserem CD-Shop-Beispiel kommt etwa dem SearchService die Aufgabe zu, auf Anfrage die aktuell angebotenen Produkte herauszugeben. Dazu wird bei jedem Start des Dienstes eine Replikation des Produktkatalogs, hier eine als "Data-Warehouse" dienende CouchDB, im lokalen Speicher erstellt (siehe Listing A2). Gleichzeitig werden diese Produktdaten durch Aufrufe an den CoverService mit Bildinformationen angereichert. Sind die Daten irgendwann zu alt, kann ein erneuter Replikationsdurchlauf angestoßen werden. Alternativ dazu könnte der Service in bestimmten Intervallen eigenständig seinen Datenbestand aktualisieren.
+
+Listing A2
+
+```c#
+private List<Doc> docs = new List<Doc>();
+private CircuitBreaker breaker = new CircuitBreaker();
+private string[] DISCOVERY_SERVICE_URLS = (Environment.GetEnvironmentVariable("DISCOVERY_SERVICE_URLS") ?? "").Split(',', ';');
+
+public dynamic Replicate()
+{            
+    dynamic result = new { message = "" };
+
+    try
+    {
+        breaker.ExecuteWithRetries(() => {
+            var serviceClient = new ServiceClient(DISCOVERY_SERVICE_URLS);
+            
+            Console.WriteLine("Try to replicate from catalog service");
+            var search = serviceClient.Get<Search>("couchdb", "/products/_all_docs?include_docs=true");
+            if (search == null) throw new Exception();
+
+            docs = search.Rows.Select(x => x.Doc).Select(x => { x.Id = x.MbId; return x; }).ToList() ?? new List<Doc>();
+
+            docs.ForEach(doc => {
+                Console.WriteLine("Try to get cover for MBID " + doc.MbId + " from cover service");
+                var covers = serviceClient.Get<List<string>>("cover-service", "/images/" + doc.MbId);
+                                        
+                doc.Covers = covers ?? new List<string>(0);
+            });
+
+            result = new { message = docs.Count + " doc(s) replicated" };
+            Console.WriteLine(result);
+            docs.ForEach(Console.WriteLine);
+
+        }, 3, TimeSpan.FromSeconds(2));
+
+        return result;
+    }
+    catch (Exception error)
+    {
+        result = new { message = "Replication error", error = error.Message };
+        Console.WriteLine(result);
+        return result;
+    }
+}
+```
+
+Eine etwas andere Strategie verfolgt der CoverService. Dieser dient als Proxy zu einem externen Dienst, von dem URLs zu CD-Cover-Bildern abgefragt werden können. Die Informationen werden hier nicht komplett repliziert, sondern erst auf Anfrage geholt. Von da an wird dann bei Folgeanfragen eine gecachte Version des Datensatzes zurückgegeben. Ist der externe Dienst nicht erreichbar oder liefert keine verwertbaren Daten, so wird hier einfach ein Standardbild als Fallback verwendet, da die Informationen nicht geschäftskritisch sind: Der Benutzer ist immer noch in der Lage, die CD zu bestellen, auch wenn das Coverbild nicht angezeigt werden kann.
