@@ -48,12 +48,15 @@ In Anlehnung an die ermittelte Organisationstruktur (Abbildung1), unserem Know-H
 * Cart - Berechnung von Preisen
 * Contract - Bestellung von Artikeln 
 
-Jeder Microservice wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung  anbieten können muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Dienst im Betrieb durch mindestens 2 Prozesse ausgeführt. 
+Jeder Microservice wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung anbieten können muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Dienst im Betrieb durch mindestens 2 Prozesse ausgeführt. 
+
+Der Betrieb mehrerer Prozesse (Ausfallsicherheit oder Workload) eines Dienst stellt uns vor besondere Entwicklungs- und Operative Herausforderungen. An dieser Stelle mag jeder inzwischen reflexartig an Load-Balancer oder Cluster denken. Doch diese haben sind im täglichen Betrieb mit mehreren unabhängigen Veröffentlichungen pro Tag meist als zu statisch erwiesen. Zudem sind diese komplex, erfordern meist Spezialwissen, ziehen Abhändigkeiten nach sich und bilden einen sogenannten "Single Point of Failure". Auch deshalb müssen wir uns im folgenden mit einigen wichtigen Aspekten einer verteilten Anwendung auseinander setzen. Darunter zählen.
 
 * Prozesskonfiguration
-* Datenhoheit
-* Zustandsverwaltung und Kommunikation
+* Minimierung von Abhängigkeiten durch Datenhoheit
+* Zustandsverwaltung und Zustandsübertragung (Kommunikation)
 * Service Discovery
 * Fehlertoleranz
 * Instrumentation und Monitoring
+* Reporting-, Stamm- und historische Daten 
 * DevOp und Infrastruktur
