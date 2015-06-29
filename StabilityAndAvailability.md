@@ -10,7 +10,7 @@ Nehmen wir an, Service A möchte seinen eigenen Datenbestand aktualisieren und m
 
 Abbildung A1
 
-![ServiceDiscovery](images/service-discovery.svg)
+![ServiceDiscovery](images/service-discovery.png)
 
 Listing A1
 
