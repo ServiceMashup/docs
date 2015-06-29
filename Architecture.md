@@ -41,22 +41,19 @@ Wer vor sehr komplexen Teildomänen mit vielen fachlichen oder technischen Herau
 
 Die Umsetzung unserer ECommerce-Anwendung lässt bewusst einige Aspekte und gwünschte Funktionen in der tatsächlichen Umsetzung vorerst außen vor. Diese werden in zukünftigen Entwicklungsschritten, nach ersten Nutzungsanalysen und damit besserem Verständnis der Teildomänen, integriert. Vermeiden Sie die Planung und Umsetzung vieler "unreifer Baustellen" mit hohen fachlichen oder technischen Risiken und konzentrieren Sie sich auf die stabile Umsetzung der Kernfunktionen. 
 
-In Anlehnung an die ermittelte Organisationstruktur (Abbildung1), unserem Know-How und der vorhandenen Resourcen haben wir uns im ersten Schritt für eine Umsetzung der Kernfunktionen nach (Abbildung 2) innerhalb eines Zeitfensters von 2 Wochen entschieden. Die völlig unabhängige und damit parallele stattfindene Entwicklung und Veröffentlichung von Funktionalität bei beinahe störungsfreiem Betrieb waren zusätzliche Gründe, die Gesamtanwendungen in 4 Teilbereiche und innerhalb der Teilbereiche in kleine spezialisierte Dienste zu teilen. 
+In Anlehnung an die ermittelte Organisationstruktur (Abbildung1), unserem Know-How und der vorhandenen Resourcen haben wir uns im ersten Schritt für eine Umsetzung der Kernfunktionen nach (Abbildung 2) innerhalb eines Zeitfensters von 2 Wochen entschieden. Die völlig unabhängige und damit parallele stattfindene Entwicklung und Veröffentlichung von Funktionalität bei beinahe störungsfreiem Betrieb waren zusätzliche Gründe, die Gesamtanwendungen in 4 Teilbereiche und innerhalb der Teilbereiche in kleine spezialisierte Dienste (Microservices) zu teilen. 
 
 * Catalog - Artikelverwaltung (CMS)
 * Search - Aggregation und Indezierung von Produktdaten
 * Cart - Berechnung von Preisen
 * Contract - Bestellung von Artikeln 
 
-Jeder Dienst wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung anbieten können muss. Um die stetige Aktualisierung und Neustarts von Diensten zu ermöglichen, wird jeder Dienst durch mindestens 2 Prozesse ausgeführt. ACHTUNG!!! - Datenhoheit - Zustandsverwaltung!!!
+Jeder Microservice wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung  anbieten können muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Dienst im Betrieb durch mindestens 2 Prozesse ausgeführt. 
 
-
-
-
-
-
-
-
-
-
-
+* Prozesskonfiguration
+* Datenhoheit
+* Zustandsverwaltung und Kommunikation
+* Service Discovery
+* Fehlertoleranz
+* Instrumentation und Monitoring
+* DevOp und Infrastruktur
