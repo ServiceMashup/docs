@@ -19,36 +19,24 @@ Abbildung 1
 
 Wem es nicht gleich gelingt einen ersten Entwurf in angemessener Zeit aus der Vogelperspektive zu erarbeiten, kann sich auf einen Teilbereich konzentrieren. Ein Entwurf, wie der Begriff bereits prägt, hat keinesfalls den Anspruch auf Vollständigkeit. Vielmehr ist die Erarbeitung innerhalb eines angemessenen Zeitfensters entscheidend. Nacharbeit und möglicherweise verbundenes Refaktorieren sollte bewusst in Kauf genommen werden. Schrittweises Erarbeiten und Anpassung durch Erkenntnissen aus der Fachdomäne soll Sie und Ihre Kollegen vor bewussten oder unbewussten Annahmen, oder schlimmer Umsetzungen, schützen. 
 
-##Architektur
+##Umsetzung Architektur
+
+Die Umsetzung unserer ECommerce-Anwendung lässt bewusst einige Aspekte und gewünschte Funktionen in der tatsächlichen Umsetzung vorerst außen vor. Diese werden in zukünftigen Entwicklungsschritten, nach ersten Nutzungsanalysen und damit besserem Verständnis der Teildomänen, integriert. Vermeiden Sie die Planung und Umsetzung vieler "unreifer Baustellen" mit hohen fachlichen oder technischen Risiken und konzentrieren Sie sich auf die stabile Umsetzung der Kernfunktionen.
 
 Laut Wikipedia - „Strukturen eines Softwaresystems: Softwareteile, die Beziehungen zwischen diesen und die Eigenschaften der Softwareteile und ihrer Beziehungen“ [Paul Clements - Wikipedia](https://de.wikipedia.org/wiki/Softwarearchitektur) lehnt sich unsere erabeitete Architektur im ersten Entwurf vor allem an die Organisationsstruktur (Abbildung 1) und Benutzeroberfläche (Abbildung 2) an.
 
 ![Composite UI](images/composite-ui.png)
 Abbildung 2
-
-![Architektur](images/architecture.png)
-Abbildung 3
-
-##Anforderungen und Risikomanagement
-
-So, oder so ähnlich, kann eine Teilanforderung aus Anwendersicht an die Gesamtanwendung beschrieben sein: 
-
-Wie unsere Kunden unserer ECommerce-Organisation es gewohnt sind, ist ein 24/7 Betrieb mit 99,9% Gesamtverfügbarkeit gewünscht. Zudem muss eine stetige Weiterentwicklung und Veröffentlichung von Softwareteilen im laufenden Betrieb gewährleistet werden. Priorität, da Umsatzrelevant, hat der tatsächliche Kauf (verbindliche Bestellung) von Produkten des Warenkorbs.
-
-Entscheidend ist, viele sonst vorborgende Annahmen, mögliche inhaltliche oder technische Fehler bzw. Probleme in Entwicklung und Betrieb von Anfang an explizit zu machen. Der Kompromiss aus technischem Aufwand und damit verbundene Kosten und der eigentlich Nutzen entsteht in der transparenten Kommunikation. D.h. vor der vermeidlich technisch perfekten Lösung, steht das Gespräch Ziele und Nutzen gegen Aufwände und Kosten an. Nach dem [Pareto-Prinzip](https://de.wikipedia.org/wiki/Paretoprinzip) ist ein "für den Anfang gut genug" nicht die perfekte aber weniger komplexe Entscheidung.
-
-Wer vor sehr komplexen Teildomänen mit vielen fachlichen oder technischen Herausforderungen steht, sei hiermit empfohlen, auf ein "klassisches [Monolith First](http://martinfowler.com/bliki/MonolithFirst.html)" Architekturmodell zurückzugreifen. So können mehr über die Fachdomäne erfahren und die technischen Risiken minimieren.
-
-##Umsetzung in Timeboxes
-
-Die Umsetzung unserer ECommerce-Anwendung lässt bewusst einige Aspekte und gewünschte Funktionen in der tatsächlichen Umsetzung vorerst außen vor. Diese werden in zukünftigen Entwicklungsschritten, nach ersten Nutzungsanalysen und damit besserem Verständnis der Teildomänen, integriert. Vermeiden Sie die Planung und Umsetzung vieler "unreifer Baustellen" mit hohen fachlichen oder technischen Risiken und konzentrieren Sie sich auf die stabile Umsetzung der Kernfunktionen. 
-
+ 
 In Anlehnung an die ermittelte Organisationstruktur (Abbildung 1), unserem Know-How und der vorhandenen Resourcen haben wir uns im ersten Schritt für eine Umsetzung der Kernfunktionen nach (Abbildung 2 und Abbildung 3) innerhalb eines Zeitfensters von 2-4 Wochen entschieden. Die völlig unabhängige und damit parallele stattfindene Entwicklung und Veröffentlichung von Funktionalität bei beinahe störungsfreiem Betrieb waren zusätzliche Gründe, die Gesamtanwendungen in 4 Teilbereiche und innerhalb der Teilbereiche in kleine spezialisierte Dienste (Microservices) zu teilen.
 
 * Catalog - Artikelverwaltung (CMS)
 * Search - Aggregation und Indezierung von Produktdaten
 * Cart - Berechnung von Preisen
-* Contract - Bestellung von Artikeln 
+* Contract - Bestellung von Artikeln
+
+![Architektur](images/architecture.png)
+Abbildung 3
 
 Jeder Microservice, dessen UI-Komponente und deren Integration wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung anbieten können muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Dienst im Betrieb durch mindestens 2 Prozesse ausgeführt. 
 
@@ -61,3 +49,13 @@ Der Betrieb mehrerer Prozesse (Ausfallsicherheit oder Workload) eines Dienst ste
 * Aggegration von Reporting-, Stamm- und historischen Daten
 * Instrumentation und Monitoring
 * DevOp und Infrastruktur
+
+##Anforderungen und Risikomanagement
+
+So, oder so ähnlich, kann eine Teilanforderung aus Anwendersicht an die Gesamtanwendung beschrieben sein: 
+
+Wie unsere Kunden unserer ECommerce-Organisation es gewohnt sind, ist ein 24/7 Betrieb mit 99,9% Gesamtverfügbarkeit gewünscht. Zudem muss eine stetige Weiterentwicklung und Veröffentlichung von Softwareteilen im laufenden Betrieb gewährleistet werden. Priorität, da Umsatzrelevant, hat der tatsächliche Kauf (verbindliche Bestellung) von Produkten des Warenkorbs.
+
+Entscheidend ist, viele sonst vorborgende Annahmen, mögliche inhaltliche oder technische Fehler bzw. Probleme in Entwicklung und Betrieb von Anfang an explizit zu machen. Der Kompromiss aus technischem Aufwand und damit verbundene Kosten und der eigentlich Nutzen entsteht in der transparenten Kommunikation. D.h. vor der vermeidlich technisch perfekten Lösung, steht das Gespräch Ziele und Nutzen gegen Aufwände und Kosten an. Nach dem [Pareto-Prinzip](https://de.wikipedia.org/wiki/Paretoprinzip) ist ein "für den Anfang gut genug" nicht die perfekte aber weniger komplexe Entscheidung.
+
+Wer vor sehr komplexen Teildomänen mit vielen fachlichen oder technischen Herausforderungen steht, sei hiermit empfohlen, auf ein "klassisches [Monolith First](http://martinfowler.com/bliki/MonolithFirst.html)" Architekturmodell zurückzugreifen. So können mehr über die Fachdomäne erfahren und die technischen Risiken minimieren.
