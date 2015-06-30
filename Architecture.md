@@ -40,13 +40,15 @@ Abbildung 3
 
 Jeder Microservice, dessen UI-Komponente und deren Integration wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung anbieten muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Microservice im Betrieb durch mindestens 2 Prozesse ausgeführt. 
 
-Der Betrieb mehrerer Prozesse (Ausfallsicherheit oder Workload) eines Dienst stellt uns vor besondere Entwicklungs- und Operative Herausforderungen. An dieser Stelle mag jeder inzwischen reflexartig an Load-Balancer oder Cluster denken. Doch diese haben sind im täglichen Betrieb mit mehreren unabhängigen Veröffentlichungen pro Tag meist als zu statisch erwiesen. Zudem sind diese komplex, erfordern meist Spezialwissen, ziehen Abhändigkeiten nach sich und bilden einen sogenannten "Single Point of Failure". Auch deshalb müssen wir uns im folgenden mit einigen wichtigen Aspekten einer verteilten Anwendung auseinander setzen. Darunter zählen.
+Um eine höhere Ausfallsicherheit oder die Verteilung von Workload zu gewährleisten, können mehrere Prozesse eines Microservice gestartet werden. An dieser Stelle mag jeder inzwischen reflexartig an Load-Balancer oder Cluster denken. Doch diese haben sind im täglichen Betrieb mit mehreren unabhängigen Veröffentlichungen pro Tag meist als zu träge und komplex erwiesen. Zudem erfordern diese meist Spezialwissen, ziehen ungewollte Abhändigkeiten und Seiteneffekte nach sich und bilden letztlich einen "Single Point of Failure".
 
-* Prozesskonfiguration
-* Zustandsverwaltung und Zustandsübertragung (Kommunikation)
+Wer mehr als einen Prozess eines Dienstes betreiben muss, steht von besonderen Herausforderung an die Entwicklung und den Betrieb. Wir müssen uns mit einigen wichtigen technischen Aspekten verteilter Anwendungen auseinander setzen.
+
+* Garantien bzw. Zusicherungen einer Zustandsverwaltung und Zustandsübertragung
 * Fehlertoleranz gegenüber Ausfall und Überlastung (Service Discovery + Data Replication)
-* Minimierung von Abhängigkeiten durch Datenhoheit (Operative Daten)
-* Aggegration von Reporting-, Stamm- und historischen Daten
+* Reduzierung von Abhängigkeiten durch operative Datenhoheit
+* Aggegration von Operativen-, Reporting-, Stamm- und historischen Daten
+* Prozesskonfiguration
 * Instrumentation und Monitoring
 * DevOp und Infrastruktur
 
