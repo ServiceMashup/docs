@@ -28,7 +28,7 @@ Laut Wikipedia - „Strukturen eines Softwaresystems: Softwareteile, die Beziehu
 ![Composite UI](images/composite-ui.png)
 Abbildung 2
  
-In Anlehnung an die ermittelte Organisationstruktur (Abbildung 1), unserem Know-How und der vorhandenen Resourcen haben wir uns im ersten Schritt für eine Umsetzung der Kernfunktionen nach (Abbildung 2 und Abbildung 3) innerhalb eines Zeitfensters von 2-4 Wochen entschieden. Die völlig unabhängige und damit parallele stattfindene Entwicklung und Veröffentlichung von Funktionalität bei beinahe störungsfreiem Betrieb waren zusätzliche Gründe, die Gesamtanwendungen in 4 Teilbereiche und innerhalb der Teilbereiche in kleine spezialisierte Dienste (Microservices) zu teilen.
+Mit unserem bisherigem Know-How der Fachdomänen und der vorhandenen Resourcen haben wir uns im ersten Schritt für eine Umsetzung der Kernfunktionen nach (Abbildung 2 und Abbildung 3) innerhalb eines Zeitfensters von 2-3 Wochen entschieden. Die völlig unabhängige und damit parallele stattfindene Entwicklung und Veröffentlichung von Funktionalität bei beinahe störungsfreiem Betrieb waren zusätzliche Gründe, die Gesamtanwendungen in 4 Teilbereiche und innerhalb der Teilbereiche in kleine spezialisierte Dienste (Microservices) zu teilen.
 
 * Catalog - Artikelverwaltung (CMS)
 * Search - Aggregation und Indezierung von Produktdaten
@@ -38,7 +38,7 @@ In Anlehnung an die ermittelte Organisationstruktur (Abbildung 1), unserem Know-
 ![Architektur](images/architecture.png)
 Abbildung 3
 
-Jeder Microservice, dessen UI-Komponente und deren Integration wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung anbieten können muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Dienst im Betrieb durch mindestens 2 Prozesse ausgeführt. 
+Jeder Microservice, dessen UI-Komponente und deren Integration wurde dabei so umgesetzt, dass dieser im Rahmen seines Normalbetriebs völlig unabhängig von anderen Diensten seine spezialisierte Dienstleistung anbieten muss. Um die stetige Aktualisierung und Neustarts von Microservices zu ermöglichen, wird jeder Microservice im Betrieb durch mindestens 2 Prozesse ausgeführt. 
 
 Der Betrieb mehrerer Prozesse (Ausfallsicherheit oder Workload) eines Dienst stellt uns vor besondere Entwicklungs- und Operative Herausforderungen. An dieser Stelle mag jeder inzwischen reflexartig an Load-Balancer oder Cluster denken. Doch diese haben sind im täglichen Betrieb mit mehreren unabhängigen Veröffentlichungen pro Tag meist als zu statisch erwiesen. Zudem sind diese komplex, erfordern meist Spezialwissen, ziehen Abhändigkeiten nach sich und bilden einen sogenannten "Single Point of Failure". Auch deshalb müssen wir uns im folgenden mit einigen wichtigen Aspekten einer verteilten Anwendung auseinander setzen. Darunter zählen.
 
@@ -54,7 +54,7 @@ Der Betrieb mehrerer Prozesse (Ausfallsicherheit oder Workload) eines Dienst ste
 
 So, oder so ähnlich, kann eine Teilanforderung aus Anwendersicht an die Gesamtanwendung beschrieben sein: 
 
-Wie unsere Kunden unserer ECommerce-Organisation es gewohnt sind, ist ein 24/7 Betrieb mit 99,9% Gesamtverfügbarkeit gewünscht. Zudem muss eine stetige Weiterentwicklung und Veröffentlichung von Softwareteilen im laufenden Betrieb gewährleistet werden. Priorität, da Umsatzrelevant, hat der tatsächliche Kauf (verbindliche Bestellung) von Produkten des Warenkorbs.
+"Wie unsere Kunden unserer ECommerce-Organisation es gewohnt sind, ist ein 24/7 Betrieb mit 99,9% Gesamtverfügbarkeit gewünscht. Zudem muss eine stetige Weiterentwicklung und Veröffentlichung von Softwareteilen im laufenden Betrieb gewährleistet werden. Priorität, da Umsatzrelevant, hat der tatsächliche Kauf (verbindliche Bestellung) von Produkten des Warenkorbs."
 
 Entscheidend ist, viele sonst vorborgende Annahmen, mögliche inhaltliche oder technische Fehler bzw. Probleme in Entwicklung und Betrieb von Anfang an explizit zu machen. Der Kompromiss aus technischem Aufwand und damit verbundene Kosten und der eigentlich Nutzen entsteht in der transparenten Kommunikation. D.h. vor der vermeidlich technisch perfekten Lösung, steht das Gespräch Ziele und Nutzen gegen Aufwände und Kosten an. Nach dem [Pareto-Prinzip](https://de.wikipedia.org/wiki/Paretoprinzip) ist ein "für den Anfang gut genug" nicht die perfekte aber weniger komplexe Entscheidung.
 
